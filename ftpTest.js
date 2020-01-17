@@ -2,30 +2,6 @@
 http.createServer().listen(8081);
 console.log("Servidor esta aberto")
 */
-var ftpClient = require('ftp-client'),
-
-config = {
-  host: '18.188.99.243',
-  port: 21,
-  user: 'user02',
-  password: 'argoftp12@'
-}
-
-options = {
-    logging: 'basic'
-}
-
-client = new ftpClient(config, options);
- 
-client.connect(function () {
- 
-    client.download('/MeDuSa_CATTALINI', './', {
-        overwrite: 'all'
-    }, function (result) {
-        console.log(result);
-    });
- 
-}); 
 
 /* const express = require('express');
 const app = express();
@@ -36,29 +12,6 @@ app.get("/", function (req, res) {
 app.listen(8081, function (req, res) {
   console.log("Teste de express")  
 }); */
-
-/* const ftp = require("basic-ftp")
-
-example()
-
-async function example() {
-    const client = new ftp.Client()
-    client.ftp.verbose = true
-    try {
-        await client.access({
-            host: "18.188.99.243",
-            user: "user02",
-            password: "argoftp12@",
-        })
-        console.log(await client.list())
-        //await client.uploadFrom("/MeDuSa_CATTALINI/Previsao.txt", "README_FTP.md")
-        await client.downloadTo("/Previsao.txt", "/MeDuSa_CATTALINI/Previsao.txt") 
-    }
-    catch(err) {
-        console.log(err)
-    }
-    client.close()
-} */
 
 /* var fs     = require('fs');
 var Client = require('ftp');
@@ -83,31 +36,38 @@ var destFTP = {
 
 }
 
-var downloadList = [];
+var downloadList = [ 'Previsao.txt'];
 
 var c = new Client();
+console.log(c.greeting)
 c.on('ready', function() {
 
-  c.list( '/MeDuSa_CELSE', function(err, list) {
-
-    if (err) throw err;
-
-    list.map(function(entry){
-      console.log(entry.name)
-      downloadList.push(entry.name);
-      if ( entry.name.match(/tar\.gz$/) && entry.name.match(/^filename/) ){
+   console.log(c.pwd())
+   c.list( '/MeDuSa_CELSE', function(err, list) {
+    
+     console.log(list);
+     if (err) throw err;
+     list.map(function(entry){
+       console.log(entry.name)
+       downloadList.push(entry.name);
+       if ( entry.name.match(/tar\.gz$/) && entry.name.match(/^filename/) ){
       } 
-    });
-
+    });  
     downloadList.map(function(file){
       // Download remote files and save it to the local file system:
-      console.log(file)
-      c.get(file, function(err, stream) {
+      //console.log(list)
+      //console.log(c.pwd())
+      c.get('Previsao.txt', function(err, stream) {
+        console.log("Entre3i")
+        stream.on("data", function (data) {
+          console.log(data.toString());
+        })
         if (err) throw err;
         stream.once('close', function() { c.end(); });
-        stream.pipe(fs.createWriteStream(file));
+        //console.log(stream)
+        stream.pipe(fs.createWriteStream( "Previsao.txt"));
 
-      });
+      }); 
 
     });
 
@@ -115,10 +75,11 @@ c.on('ready', function() {
 
   });
 
-});
+}); 
 
 
-c.connect(srcFTP); */
+c.connect(srcFTP);
+*/
 
 /* const jsftp = require("jsftp");
 
@@ -207,3 +168,193 @@ ftp.connect({host: host, user: user, password: password})
   console.dir(list);
   return ftp.end();
 }); */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* var ftpClient = require('ftp-client'),
+
+config = {
+  host: '18.188.99.243',
+  port: 21,
+  user: 'user02',
+  password: 'argoftp12@'
+}
+
+options = {
+    logging: 'basic'
+}
+
+client = new ftpClient(config, options);
+DowloadDir = [
+  {
+    dirName: '/MeDuSa_CATTALINI',
+    dirResult: 'MedusaResult'
+  },
+  {
+    dirName: '/MeDuSa_CELSE',
+    dirResult: 'MedusaResult'
+  },
+  {
+    dirName: '/ReDRAFT_BTS',
+    dirResult: 'MedusaResult'
+  },
+  {
+    dirName: '/ReDRAFT_PORTOCEL',
+    dirResult: 'MedusaResult'
+  },
+
+  ]
+
+client.connect(function () {
+  
+    client.download('./MeDuSa_CATTALINI', './', {
+        overwrite: 'all'
+    }, function (result) {
+      console.log(result)
+    });
+
+ 
+});  */
+
+
+
+
+
+
+/* 
+{
+  localFileName: "MedusaResult/data_atualizacao2.txt",
+  remoteFileName: "MeDuSa_CELSE/data_atualizacao.txt"
+},
+{
+  localFileName: "MedusaResult/data_atualizacao3.txt",
+  remoteFileName: "ReDRAFT_BTS/data_atualizacao.txt"
+},
+{
+  localFileName: "MedusaResult/data_atualizacao4.txt",
+  remoteFileName: "ReDRAFT_PORTOCEL/data_atualizacao.txt"
+}, */
+
+
+const ftp = require("basic-ftp")
+const fs = require("fs")
+
+dowloadDir = [
+  {
+    localFileName: "AtualizacaoMedusa/MeDuSa_CATTALINI_data.txt",
+    remoteFileName: "MeDuSa_CATTALINI/data_atualizacao.txt"
+  },
+  {
+    localFileName: "AtualizacaoMedusa/MeDuSa_CELSE_data.txt",
+    remoteFileName: "MeDuSa_CELSE/data_atualizacao.txt"
+  },
+  {
+    localFileName: "AtualizacaoMedusa/ReDRAFT_BTS_data.txt",
+    remoteFileName: "ReDRAFT_BTS/data_atualizacao.txt"
+  },
+  {
+    localFileName: "AtualizacaoMedusa/ReDRAFT_PORTOCEL_data.txt",
+    remoteFileName: "ReDRAFT_PORTOCEL/data_atualizacao.txt"
+  },
+  {
+    localFileName: "AtualizacaoMedusa/MeDuSa_CELSE_data.txt",
+    remoteFileName: "MeDuSa_CELSE/data_atualizacao.txt"
+  }
+]
+
+InputHost = {
+    host: "18.188.99.243",
+    user: "user02",
+    password: "argoftp12@"
+}
+
+/* dowloadDir = [
+  {
+    localFileName: "AtualizacaoRedraft/MeDuSa_CATTALINI_data.txt",
+    remoteFileName: "ReDRAFT_BG/data_atualizacao.txt",
+  },
+  {
+    localFileName: "AtualizacaoRedraft/MeDuSa_CELSE_data.txt",
+    remoteFileName: "ReDRAFT_ITAGUAI/data_atualizacao.txt",
+  },
+  {
+    localFileName: "AtualizacaoRedraft/ReDRAFT_BTS_data.txt",
+    remoteFileName: "ReDRAFT_SUAPE/data_atualizacao.txt",
+  }
+]
+
+InputHost = {
+  host: "3.14.244.193",
+  user: "user02",
+  password: "argoftp12@"
+} 
+ */
+
+
+if(!fs.existsSync("AtualizacaoRedraft") || !fs.existsSync("AtualizacaoMedusa")){
+  fs.mkdirSync("AtualizacaoRedraft", 0766, function(err){
+      if(err){
+          console.log(err);
+          // echo the result back
+          response.send("ERROR! Can't make the AtualizacaoRedraft! \n");
+      }
+  });
+  fs.mkdirSync("AtualizacaoMedusa", 0766, function(err){
+    if(err){
+        console.log(err);
+        // echo the result back
+        response.send("ERROR! Can't make the AtualizacaoMedusa! \n");
+    }
+  });    
+} 
+ftpDowload(InputHost, dowloadDir)
+
+async function ftpDowload(input, dowload) {
+  const client = new ftp.Client(0)
+  client.ftp.verbose = true
+  try {
+    client.trackProgress(info => {
+      console.log("File", info.name)
+      console.log("Type", info.type)
+      console.log("Transferred", info.bytes)
+      console.log("Transferred Overall", info.bytesOverall)
+    })      
+    await dataDowload(input, dowload, client);
+    client.close()
+  }
+  catch(err) {
+    console.log(err)
+  }
+} 
+
+async function dataDowload(input, dowload, client){
+  await client.access(input)
+  for( const [index, list] of dowload.entries()){
+    console.log(list.localFileName)
+    console.log(list.remoteFileName)
+    await client.downloadTo("./" + list.localFileName, 
+          "./" + list.remoteFileName) 
+
+  }
+};
+  
+  
+
+
+
+
+
+
+
+
+
